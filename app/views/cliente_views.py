@@ -26,6 +26,10 @@ class ClienteCreateView(CreateView):
             endereco = endereco_form.save()
             cliente = cliente_form.save(commit=False)
             cliente.endereco = endereco
+            if cliente.profissao == "Programador":
+                cliente.nivel = 1
+            else:
+                cliente.nivel = 2
             cliente.save()
             return HttpResponseRedirect(reverse("lista_clientes"))
         return render(request, "clientes/form_cliente.html", {
