@@ -3,6 +3,7 @@ from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, ListView, UpdateView, DetailView, DeleteView
 from ..models import Cliente
 from ..forms.cliente_forms import ClienteForm, EnderecoForm
+from ..services.cliente_services import calcular_nivel_cliente
 
 # Create your views here.
 
@@ -26,10 +27,7 @@ class ClienteCreateView(CreateView):
             endereco = endereco_form.save()
             cliente = cliente_form.save(commit=False)
             cliente.endereco = endereco
-            if cliente.profissao == "Programador":
-                cliente.nivel = 1
-            else:
-                cliente.nivel = 2
+            cliente = calcular_nivel_cliente(cliente=cliente)
             cliente.save()
             return HttpResponseRedirect(reverse("lista_clientes"))
         return render(request, "clientes/form_cliente.html", {
@@ -75,6 +73,7 @@ class ClienteUpdateView(UpdateView):
             endereco = endereco_form.save()
             cliente = cliente_form.save(commit=False)
             cliente.endereco = endereco
+            cliente = calcular_nivel_cliente(cliente=cliente)
             cliente.save()
             return HttpResponseRedirect(reverse("lista_clientes"))
 
